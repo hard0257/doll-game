@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Princess Star Catcher ✨</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <h1 class="title">🌟 Princess Star Catcher 🌟</h1>
+
+    <div class="hud">
+      <div class="score-board">Score: <strong id="score">0</strong></div>
+      <div class="miss-board">Missed: <strong id="missed">0</strong>/3</div>
+      <button id="startBtn">Start Game</button>
+    </div>
+
+    <div class="game-area">
+      <canvas id="gameCanvas" width="360" height="500"></canvas>
+
+      <!-- Princess at the bottom -->
+      <div class="princess-area">
+        <div class="princess-glow"></div>
+        <img src="images/princess.png" alt="Princess" class="princess" id="princessChar">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.getElementById("score");
+    const missedEl = document.getElementById("missed");
+    const startBtn = document.getElementById("startBtn");
+
+    const starImg = new Image();
+    starImg.src = "images/star.png";
+
+    let stars = [];
+    let score = 0;
+    let missed = 0;
+    let playing = false;
+    let gameInterval;
+
+    // 🌟 spawn new star
+    function spawnStar() {
+      stars.push({
+        x: Math.random() * (canvas.width - 30),
+        y: -30,
+        size: 32,
+        speed: 2 + Math.random() * 2,
+      });
+    }
+
+    // 🌟 draw stars
+    function drawStars() {
+      stars.forEach((s) => {
+        ctx.save();
+        ctx.shadowColor = "rgba(255,255,200,0.8)";
+        ctx.shadowBlur = 10;
+        ctx.drawImage(starImg, s.x, s.y, s.size, s.size);
+        ctx.restore();
+        s.y += s.speed;
+      });
+    }
+
+    // 🌟 update star logic
+    function updateStars() {
+      for (let i = stars.length - 1; i >= 0; i--) {
+        const s = stars[i];
+        if (s.y > canvas.height) {
+          stars.splice(i, 1);
+          missed++;
+          missedEl.textContent = missed;
+          if (missed >= 3) endGame();
+        }
+      }
+    }
+
+    // 🌟 star click/tap
+    function handleStarClick(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      stars.forEach((s, i) => {
+        if (
+          clickX >= s.x &&
+          clickX <= s.x + s.size &&
+          clickY >= s.y &&
+          clickY <= s.y + s.size
+        ) {
+          stars.splice(i, 1);
+          score++;
+          scoreEl.textContent = score;
+
+          // sparkle
+          ctx.beginPath();
+          ctx.arc(s.x + s.size / 2, s.y + s.size / 2, 18, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,255,180,0.3)";
+          ctx.fill();
+
+          const princess = document.getElementById("princessChar");
+          princess.classList.add("react");
+          setTimeout(() => princess.classList.remove("react"), 400);
+        }
+      });
+    }
+
+    // 🎮 main game update
+    function updateGame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawStars();
+      updateStars();
+      requestAnimationFrame(updateGame);
+    }
+
+    // ▶️ start
+    function startGame() {
+      if (playing) return;
+      playing = true;
+      score = 0;
+      missed = 0;
+      stars = [];
+      scoreEl.textContent = 0;
+      missedEl.textContent = 0;
+      updateGame();
+      gameInterval = setInterval(spawnStar, 700);
+    }
+
+    // 💔 end
+    function endGame() {
+      playing = false;
+      clearInterval(gameInterval);
+      const princess = document.getElementById("princessChar");
+      princess.classList.add("sad");
+      alert("💫 You missed 3 stars! Final Score: " + score);
+      setTimeout(() => princess.classList.remove("sad"), 1500);
+    }
+
+    // controls
+    startBtn.addEventListener("click", startGame);
+    canvas.addEventListener("click", handleStarClick);
+    canvas.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      handleStarClick(touch);
+    });
+  </script>
+</body>
+</html>

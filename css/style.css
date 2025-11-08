@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* =============== RESET =============== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at 40% 10%, #09194a 0%, #01030c 80%);
+  color: #f8fafc;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* =============== GAME CONTAINER =============== */
+.game-container {
+  width: 95%;
+  max-width: 420px;
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.08);
+  text-align: center;
+  position: relative;
+}
+
+/* =============== TITLE =============== */
+.title {
+  font-size: 1.8rem;
+  color: #ffe066;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px #ffd54f, 0 0 25px #ff33cc;
+  margin-bottom: 14px;
+  animation: titleGlow 2.5s infinite ease-in-out;
+}
+
+@keyframes titleGlow {
+  0%, 100% { text-shadow: 0 0 14px #ffd54f, 0 0 22px #ff33cc; }
+  50% { text-shadow: 0 0 25px #fff9b1, 0 0 45px #ff66cc; }
+}
+
+/* =============== HUD AREA =============== */
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.score-board strong {
+  color: #fff;
+  font-size: 1.2rem;
+  text-shadow: 0 0 8px #fffb96;
+}
+
+.miss-board strong {
+  color: #ff7070;
+  font-size: 1.2rem;
+  text-shadow: 0 0 6px #ff4d4d;
+}
+
+#startBtn {
+  background: linear-gradient(135deg, #ff007f, #ff4dc4);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
+}
+#startBtn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 25px rgba(255, 0, 128, 0.7);
+}
+
+/* =============== GAME AREA / CANVAS =============== */
+.game-area {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
+  background: linear-gradient(to bottom, #061534, #030712);
+  box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.06),
+              0 0 18px rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
+  border: 2px solid rgba(255,255,255,0.05);
+}
+
+/* Add a dreamy sky shimmer */
+canvas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: radial-gradient(circle at 60% 20%, rgba(255,255,255,0.08), transparent 70%);
+  pointer-events: none;
+  animation: skyGlow 6s infinite alternate ease-in-out;
+}
+@keyframes skyGlow {
+  0% { opacity: 0.4; }
+  100% { opacity: 0.8; }
+}
+
+/* =============== PRINCESS =============== */
+.princess-area {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.princess-glow {
+  width: 130px;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.18), transparent 70%);
+  border-radius: 50%;
+  filter: blur(8px);
+  animation: glowPulse 3s infinite ease-in-out;
+}
+
+@keyframes glowPulse {
+  0%,100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+.princess {
+  width: 115px;
+  margin-top: -25px;
+  animation: floaty 3s ease-in-out infinite;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.princess.react {
+  transform: scale(1.1) rotate(-2deg);
+  filter: drop-shadow(0 0 14px #fff7a5);
+}
+
+.princess.sad {
+  animation: none;
+  transform: translateY(10px) scale(0.9);
+  filter: grayscale(1) opacity(0.8);
+}
+
+/* =============== EXTRA VISUALS =============== */
+/* Floating sparkles on the background (illusion) */
+body::before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 
+    40px 20px #fff8,
+    120px 80px #fff5,
+    220px 200px #fff6,
+    300px 150px #fff4,
+    160px 250px #fff6,
+    280px 400px #fff8,
+    50px 380px #fff7;
+  animation: twinkle 6s infinite linear alternate;
+}
+@keyframes twinkle {
+  0% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+  100% { opacity: 0.7; transform: scale(1); }
+}
+
+/* =============== RESPONSIVE (Phones) =============== */
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem;
+  }
+  #startBtn {
+    padding: 8px 14px;
+    font-size: 0.95rem;
+  }
+  .princess {
+    width: 100px;
+  }
+}
